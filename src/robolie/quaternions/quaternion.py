@@ -32,6 +32,7 @@ class Quaternion:
             z: The third imaginary part of the quaternion.
         """
         self.full = np.array([w, x, y, z])
+        self.matrix = np.array([[w + 1j * x, y + 1j * z], [-y + 1j * z, w - 1j * x]])
 
     @property
     def real(self) -> float:
@@ -75,6 +76,22 @@ class Quaternion:
         """Sets the component of the quaternion at the given index."""
         self.full[index] = value
 
+    @classmethod
+    def from_matrix(cls, matrix: np.ndarray) -> Quaternion:
+        """Creates a quaternion from a unitary matrix.
+
+        Args:
+            matrix: The unitary matrix representation of the quaternion.
+
+        Returns:
+            The quaternion represented by the matrix.
+        """
+        w = matrix[0, 0].real
+        x = matrix[0, 0].imag
+        y = matrix[0, 1].real
+        z = matrix[0, 1].imag
+        return cls(w, x, y, z)
+
     def normalize(self) -> None:
         """Normalizes the quaternion."""
         norm: float = self.norm()
@@ -102,6 +119,16 @@ class Quaternion:
         """Returns the inverse of the quaternion."""
         return Quaternion(
             self.real / self.norm() ** 2, *-self.vector / self.norm() ** 2
+        )
+
+    def to_unitary_matrix(self) -> np.ndarray:
+        """Returns the unitary matrix representation of the quaternion."""
+        w, x, y, z = self.full
+        return np.array(
+            [
+                [w + x * 1j, y + z * 1j],
+                [-y + z * 1j, w - x * 1j],
+            ]
         )
 
 

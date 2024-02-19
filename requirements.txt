@@ -5,3 +5,4 @@ future
 ipympl
 pandas
 plotly
+pygame

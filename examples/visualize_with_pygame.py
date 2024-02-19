@@ -72,6 +72,28 @@ def display_cube(cube):
 axis = np.array([1, 1, 0])
 axis = axis / np.linalg.norm(axis)
 
+# Functionality for drawing the rotation axis
+def draw_axis_arrow():
+    arrow_length = 200
+    arrow_color = (120, 144, 250)
+    start_point = (width / 2 - arrow_length * axis[0], height / 2 - arrow_length * axis[1])
+    end_point = (width / 2 + arrow_length * axis[0], height / 2 + arrow_length * axis[1])
+    pygame.draw.line(
+        screen,
+        arrow_color,
+        start_point,
+        end_point,
+        5,
+    )
+    angle = np.arctan2(end_point[1] - start_point[1], end_point[0] - start_point[0])
+    head_length = 20
+    arrowhead1 = (end_point[0] - head_length * np.cos(angle - np.pi/6),
+              end_point[1] - head_length * np.sin(angle - np.pi/6))
+    arrowhead2 = (end_point[0] - head_length * np.cos(angle + np.pi/6),
+              end_point[1] - head_length * np.sin(angle + np.pi/6))
+    pygame.draw.polygon(screen, arrow_color, [end_point, arrowhead1, arrowhead2])
+
+
 # Angular velocity
 seconds_to_rotate = 5
 theta_per_second = 2 * np.pi / (60 * seconds_to_rotate)
@@ -100,6 +122,38 @@ cursor_color = black
 cursor_blink_interval = 500  # in milliseconds
 cursor_last_toggle = pygame.time.get_ticks()
 cursor_visible = True
+
+# Function for drawing the input box
+def draw_input_box():
+    pygame.draw.rect(screen, black, input_rect, 2)
+    text_surface = font.render(input_text, True, black)
+    screen.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
+
+    # Draw the instruction text
+    screen.blit(instruction_text, instruction_rect.topleft)
+
+    # Draw the cursor if the input box is active and the cursor is visible
+    if input_active and cursor_visible:
+        cursor_x = (
+            input_rect.x + 5 + text_surface.get_width()
+        )  # Cursor position at the end of the text
+        pygame.draw.line(
+            screen,
+            cursor_color,
+            (cursor_x, input_rect.y + 5),
+            (cursor_x, input_rect.y + input_rect.height - 5),
+            cursor_width,
+        )
+
+    # Draw the coordinates text box
+    pygame.draw.rect(screen, black, coordinates_box, 2)
+    coordinates_surface = font.render(coordinates_text, True, black)
+    screen.blit(coordinates_surface, (coordinates_box.x + 5, coordinates_box.y + 5))
+
+
+# Initialize coordinates text box variables
+coordinates_box = pygame.Rect(450, 560, 330, 32)
+coordinates_text = f'Current axis: {np.round(axis, decimals = 1)}'
 
 # Main loop
 running = True
@@ -132,9 +186,9 @@ while running:
                             axis = coordinates
                             # Normalize the axis
                             axis = axis / np.linalg.norm(axis)
-                        print("Entered Coordinates:", coordinates)
+                        coordinates_text = f'Current axis: {np.round(axis, decimals = 1)}'
                     except ValueError:
-                        print("Invalid input. Please enter valid 3D coordinates.")
+                        coordinates_text = 'Invalid input. Please enter valid 3D coordinates.'
                     input_text = ""
                 elif event.key == pygame.K_BACKSPACE:
                     input_text = input_text[:-1]
@@ -147,35 +201,10 @@ while running:
     screen.fill(white)
 
     # Draw the input box
-    pygame.draw.rect(screen, black, input_rect, 2)
-    text_surface = font.render(input_text, True, black)
-    screen.blit(text_surface, (input_rect.x + 5, input_rect.y + 5))
-
-    # Draw the instruction text
-    screen.blit(instruction_text, instruction_rect.topleft)
-
-    # Draw the cursor if the input box is active and the cursor is visible
-    if input_active and cursor_visible:
-        cursor_x = (
-            input_rect.x + 5 + text_surface.get_width()
-        )  # Cursor position at the end of the text
-        pygame.draw.line(
-            screen,
-            cursor_color,
-            (cursor_x, input_rect.y + 5),
-            (cursor_x, input_rect.y + input_rect.height - 5),
-            cursor_width,
-        )
+    draw_input_box()
 
     # Display rotation axis as arrow from center of cube
-    arrow_length = 200
-    pygame.draw.line(
-        screen,
-        (120, 144, 250),
-        (width / 2 - arrow_length * axis[0], height / 2 - arrow_length * axis[1]),
-        (width / 2 + arrow_length * axis[0], height / 2 + arrow_length * axis[1]),
-        5,
-    )
+    draw_axis_arrow()
 
     # Rotate cube
     cube = rotate_qube(theta_per_second, axis, cube)

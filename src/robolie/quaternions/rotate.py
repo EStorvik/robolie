@@ -23,7 +23,7 @@ def rotate_by_quaternion(
     Returns:
         The rotated vector.
     """
-    q: rl.Quaternion = rl.quaternion_from_angle_and_axis(theta, axis)
+    q: rl.Quaternion = rl.Quaternion.from_angle_and_axis(theta, axis)
     p: rl.Quaternion = rl.Quaternion(0, *vector)
     q_conj: rl.Quaternion = q.conjugated()
     p_rot: rl.Quaternion = q * p * q_conj

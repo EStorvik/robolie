@@ -91,6 +91,22 @@ class Quaternion:
         y = matrix[0, 1].real
         z = matrix[0, 1].imag
         return cls(w, x, y, z)
+    
+    @classmethod
+    def from_angle_and_axis(cls, theta: float, axis: np.ndarray) -> Quaternion:
+        """Creates a quaternion from an angle and an axis of rotation.
+
+        Args:
+            theta: The angle of rotation in radians.
+            axis: The axis of rotation as a 3D vector.
+
+        Returns:
+            The quaternion representing the rotation.
+        """
+        axis = axis / np.linalg.norm(axis)
+        w = np.cos(theta / 2)
+        v = np.sin(theta / 2) * axis
+        return cls(w, *v)
 
     def normalize(self) -> None:
         """Normalizes the quaternion."""
@@ -131,18 +147,3 @@ class Quaternion:
             ]
         )
 
-
-def quaternion_from_angle_and_axis(theta: float, axis: np.ndarray) -> Quaternion:
-    """Creates a quaternion from an angle and an axis of rotation.
-
-    Args:
-        theta: The angle of rotation in radians.
-        axis: The axis of rotation as a 3D vector.
-
-    Returns:
-        The quaternion representing the rotation.
-    """
-    axis = axis / np.linalg.norm(axis)
-    w = np.cos(theta / 2)
-    v = np.sin(theta / 2) * axis
-    return Quaternion(w, *v)

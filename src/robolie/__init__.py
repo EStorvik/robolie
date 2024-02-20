@@ -9,3 +9,5 @@ isort:skip_file
 
 from robolie.quaternions.quaternion import *
 from robolie.quaternions.rotate import *
+
+from robolie.twodimensional.so2 import *

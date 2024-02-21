@@ -91,7 +91,7 @@ class Quaternion:
         y = matrix[0, 1].real
         z = matrix[0, 1].imag
         return cls(w, x, y, z)
-    
+
     @classmethod
     def from_angle_and_axis(cls, theta: float, axis: np.ndarray) -> Quaternion:
         """Creates a quaternion from an angle and an axis of rotation.
@@ -146,4 +146,54 @@ class Quaternion:
                 [-y + z * 1j, w - x * 1j],
             ]
         )
+    
+    def log(self) -> PureQuaternion:
+        """Logarithmic map to the lie algebra of unit quaternions.
 
+        Returns:
+            The corresponding element of the lie algebra.
+        """
+        theta = 2.0 * np.arccos(self.real)
+        axis = self.vector / np.linalg.norm(self.vector)
+        return PureQuaternion(theta * axis)
+
+
+
+class PureQuaternion:
+    """Class for the lie algebra of unit quaternions. This is of 
+    course the same as the Lie Algebra of SU(2) and is often
+    denoted by su(2) (with fraktur letters)
+
+    Attributes:
+        vector: The vectorial part of the quaternion as a numpy array.
+
+    """
+
+    def __init__(self, x: float, y: float, z: float) -> None:
+        """Initializes a pure quaternion from its components.
+
+        Args:
+            x: The first imaginary part of the quaternion.
+            y: The second imaginary part of the quaternion.
+            z: The third imaginary part of the quaternion.
+        """
+        self.vector = np.array([x, y, z])
+
+    def __mul__(self, other: PureQuaternion) -> PureQuaternion:
+        """Multiplies two pure quaternions."""
+        return PureQuaternion(np.cross(self.vector, other.vector))
+
+    def __str__(self) -> str:
+        """Returns a string representation of the pure quaternion."""
+        return f"({self.vector[0]}, {self.vector[1]}, {self.vector[2]})"
+
+    def exp(self) -> Quaternion:
+        """Exponential map to the lie group of unit quaternions.
+
+        Returns:
+            The corresponding element of the lie group.
+        """
+        theta = np.linalg.norm(self.vector)
+        axis = self.vector / theta
+        return Quaternion.from_angle_and_axis(2.0 * theta, axis)
+    

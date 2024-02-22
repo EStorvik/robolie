@@ -111,7 +111,7 @@ class Quaternion:
     def normalize(self) -> None:
         """Normalizes the quaternion."""
         norm: float = self.norm()
-        self.full = self.full/norm
+        self.full = self.full / norm
 
     def normalized(self) -> Quaternion:
         """Returns a normalized copy of the quaternion."""
@@ -145,7 +145,7 @@ class Quaternion:
                 [-y + z * 1j, w - x * 1j],
             ]
         )
-    
+
     def log(self) -> PureQuaternion:
         """Logarithmic map to the lie algebra of unit quaternions.
 
@@ -155,15 +155,14 @@ class Quaternion:
         r = np.linalg.norm(self.vector)
         v = self.vector / r
         if self.real < 0:
-            theta = np.pi-np.arcsin(r)
+            theta = np.pi - np.arcsin(r)
         else:
             theta = np.arcsin(r)
         return PureQuaternion(*(theta * v))
 
 
-
 class PureQuaternion:
-    """Class for the lie algebra of unit quaternions. This is of 
+    """Class for the lie algebra of unit quaternions. This is of
     course the same as the Lie Algebra of SU(2) and is often
     denoted by su(2) (with fraktur letters)
 
@@ -184,7 +183,7 @@ class PureQuaternion:
 
     def __mul__(self, other: PureQuaternion) -> PureQuaternion:
         """Multiplies two pure quaternions."""
-        return PureQuaternion(np.cross(self.vector, other.vector))
+        return PureQuaternion(*np.cross(self.vector, other.vector))
 
     def __str__(self) -> str:
         """Returns a string representation of the pure quaternion."""
@@ -196,7 +195,6 @@ class PureQuaternion:
         Returns:
             The corresponding element of the lie group.
         """
-        theta = np.linalg.norm(self.vector)
-        axis = self.vector / theta
+        theta: float = float(np.linalg.norm(self.vector))
+        axis: np.ndarray = self.vector / theta
         return Quaternion.from_angle_and_axis(2.0 * theta, axis)
-    

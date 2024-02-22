@@ -111,8 +111,7 @@ class Quaternion:
     def normalize(self) -> None:
         """Normalizes the quaternion."""
         norm: float = self.norm()
-        self.real /= norm
-        self.vector /= norm
+        self.full = self.full/norm
 
     def normalized(self) -> Quaternion:
         """Returns a normalized copy of the quaternion."""
@@ -153,9 +152,13 @@ class Quaternion:
         Returns:
             The corresponding element of the lie algebra.
         """
-        theta = 2.0 * np.arccos(self.real)
-        axis = self.vector / np.linalg.norm(self.vector)
-        return PureQuaternion(theta * axis)
+        r = np.linalg.norm(self.vector)
+        v = self.vector / r
+        if self.real < 0:
+            theta = np.pi-np.arcsin(r)
+        else:
+            theta = np.arcsin(r)
+        return PureQuaternion(*(theta * v))
 
 
 

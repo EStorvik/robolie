@@ -104,8 +104,8 @@ class Quaternion:
             The quaternion representing the rotation.
         """
         axis = axis / np.linalg.norm(axis)
-        w = np.cos(theta / 2)
-        v = np.sin(theta / 2) * axis
+        w = np.cos(theta)
+        v = np.sin(theta) * axis
         return cls(w, *v)
 
     def normalize(self) -> None:
@@ -152,6 +152,7 @@ class Quaternion:
         Returns:
             The corresponding element of the lie algebra.
         """
+        assert np.isclose(self.norm(), 1), "Quaternion must be normalized."
         r = np.linalg.norm(self.vector)
         v = self.vector / r
         if self.real < 0:
@@ -159,6 +160,18 @@ class Quaternion:
         else:
             theta = np.arcsin(r)
         return PureQuaternion(*(theta * v))
+    
+    def which_rotation(self) -> tuple:
+        """Returns the corresponding angle and axis of rotation of the unit quaternion."""
+        assert np.isclose(self.norm(), 1), "Quaternion must be normalized."
+        r = np.linalg.norm(self.vector)
+        axis = self.vector / r
+        if self.real < 0:
+            theta = np.pi - np.arcsin(r)
+        else:
+            theta = np.arcsin(r)
+        angle = theta/2
+        return (angle, axis)
 
 
 class PureQuaternion:
@@ -184,6 +197,14 @@ class PureQuaternion:
     def __mul__(self, other: PureQuaternion) -> PureQuaternion:
         """Multiplies two pure quaternions."""
         return PureQuaternion(*np.cross(self.vector, other.vector))
+    
+    def __truediv__(self, other: float) -> PureQuaternion:
+        """Divides a pure quaternion by a scalar."""
+        return PureQuaternion(*(self.vector / other))
+    
+    def __add__(self, other: PureQuaternion) -> PureQuaternion:
+        """Adds two pure quaternions."""
+        return PureQuaternion(*(self.vector + other.vector))
 
     def __str__(self) -> str:
         """Returns a string representation of the pure quaternion."""
@@ -197,4 +218,4 @@ class PureQuaternion:
         """
         theta: float = float(np.linalg.norm(self.vector))
         axis: np.ndarray = self.vector / theta
-        return Quaternion.from_angle_and_axis(2.0 * theta, axis)
+        return Quaternion.from_angle_and_axis(theta, axis)

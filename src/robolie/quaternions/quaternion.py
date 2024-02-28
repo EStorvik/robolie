@@ -160,7 +160,7 @@ class Quaternion:
         else:
             theta = np.arcsin(r)
         return PureQuaternion(*(theta * v))
-    
+
     def which_rotation(self) -> tuple:
         """Returns the corresponding angle and axis of rotation of the unit quaternion."""
         assert np.isclose(self.norm(), 1), "Quaternion must be normalized."
@@ -170,7 +170,7 @@ class Quaternion:
             theta = np.pi - np.arcsin(r)
         else:
             theta = np.arcsin(r)
-        angle = theta/2
+        angle = theta / 2
         return (angle, axis)
 
 
@@ -197,11 +197,11 @@ class PureQuaternion:
     def __mul__(self, other: PureQuaternion) -> PureQuaternion:
         """Multiplies two pure quaternions."""
         return PureQuaternion(*np.cross(self.vector, other.vector))
-    
+
     def __truediv__(self, other: float) -> PureQuaternion:
         """Divides a pure quaternion by a scalar."""
         return PureQuaternion(*(self.vector / other))
-    
+
     def __add__(self, other: PureQuaternion) -> PureQuaternion:
         """Adds two pure quaternions."""
         return PureQuaternion(*(self.vector + other.vector))

@@ -10,8 +10,8 @@ p0 = np.array([1, 0, 0])
 # Define the rotations
 rotations = [
     (np.pi / 4, np.array([0, 1, 0])),
-    (np.pi / 4, np.array([0, 1, 0])),
-    (np.pi / 4, np.array([0, 1, 0])),
+    (np.pi / 3, np.array([0, 1/np.sqrt(2), 1/np.sqrt(2)])),
+    (np.pi / 2, np.array([0, 0, 1])),
 ]
 labels = [f'Rotation {i+1}' for i in range(len(rotations))]
 
@@ -19,7 +19,7 @@ labels = [f'Rotation {i+1}' for i in range(len(rotations))]
 # compute average rotation
 avg_quaternion = rl.compute_average_rotation_quaternion(rotations)
 avg_angle, avg_axis = avg_quaternion.which_rotation()
-rotations.append((3*avg_angle, avg_axis))
+rotations.append((avg_angle, avg_axis))
 labels.append('Average Rotation')
 
 def make_angles(angle, steps = 100):

@@ -170,7 +170,7 @@ class Quaternion:
             theta = np.pi - np.arcsin(r)
         else:
             theta = np.arcsin(r)
-        angle = theta / 2
+        angle = 2*theta
         return (angle, axis)
 
 

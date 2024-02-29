@@ -55,7 +55,7 @@ def compute_average_rotation_quaternion(
 
     # Convert rotations to quaternions
     quaternions = [
-        rl.Quaternion.from_angle_and_axis(theta / 2, axis) for theta, axis in rotations
+        rl.Quaternion.from_angle_and_axis(theta/2, axis) for theta, axis in rotations
     ]
 
     # Map all quaternions to the lie algebra

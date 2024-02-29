@@ -72,12 +72,19 @@ def display_cube(cube):
 axis = np.array([1, 1, 0])
 axis = axis / np.linalg.norm(axis)
 
+
 # Functionality for drawing the rotation axis
 def draw_axis_arrow():
     arrow_length = 200
     arrow_color = (120, 144, 250)
-    start_point = (width / 2 - arrow_length * axis[0], height / 2 - arrow_length * axis[1])
-    end_point = (width / 2 + arrow_length * axis[0], height / 2 + arrow_length * axis[1])
+    start_point = (
+        width / 2 - arrow_length * axis[0],
+        height / 2 - arrow_length * axis[1],
+    )
+    end_point = (
+        width / 2 + arrow_length * axis[0],
+        height / 2 + arrow_length * axis[1],
+    )
     pygame.draw.line(
         screen,
         arrow_color,
@@ -87,10 +94,14 @@ def draw_axis_arrow():
     )
     angle = np.arctan2(end_point[1] - start_point[1], end_point[0] - start_point[0])
     head_length = 20
-    arrowhead1 = (end_point[0] - head_length * np.cos(angle - np.pi/6),
-              end_point[1] - head_length * np.sin(angle - np.pi/6))
-    arrowhead2 = (end_point[0] - head_length * np.cos(angle + np.pi/6),
-              end_point[1] - head_length * np.sin(angle + np.pi/6))
+    arrowhead1 = (
+        end_point[0] - head_length * np.cos(angle - np.pi / 6),
+        end_point[1] - head_length * np.sin(angle - np.pi / 6),
+    )
+    arrowhead2 = (
+        end_point[0] - head_length * np.cos(angle + np.pi / 6),
+        end_point[1] - head_length * np.sin(angle + np.pi / 6),
+    )
     pygame.draw.polygon(screen, arrow_color, [end_point, arrowhead1, arrowhead2])
 
 
@@ -123,6 +134,7 @@ cursor_blink_interval = 500  # in milliseconds
 cursor_last_toggle = pygame.time.get_ticks()
 cursor_visible = True
 
+
 # Function for drawing the input box
 def draw_input_box():
     pygame.draw.rect(screen, black, input_rect, 2)
@@ -153,7 +165,7 @@ def draw_input_box():
 
 # Initialize coordinates text box variables
 coordinates_box = pygame.Rect(450, 560, 330, 32)
-coordinates_text = f'Current axis: {np.round(axis, decimals = 1)}'
+coordinates_text = f"Current axis: {np.round(axis, decimals = 1)}"
 
 # Main loop
 running = True
@@ -186,9 +198,13 @@ while running:
                             axis = coordinates
                             # Normalize the axis
                             axis = axis / np.linalg.norm(axis)
-                        coordinates_text = f'Current axis: {np.round(axis, decimals = 1)}'
+                        coordinates_text = (
+                            f"Current axis: {np.round(axis, decimals = 1)}"
+                        )
                     except ValueError:
-                        coordinates_text = 'Invalid input. Please enter valid 3D coordinates.'
+                        coordinates_text = (
+                            "Invalid input. Please enter valid 3D coordinates."
+                        )
                     input_text = ""
                 elif event.key == pygame.K_BACKSPACE:
                     input_text = input_text[:-1]

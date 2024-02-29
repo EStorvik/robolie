@@ -8,7 +8,7 @@ rot3 = rot1 * rot2
 rot4 = rl.SO2(1.5)
 
 
-avg_rotation = rl.SO2.exp((rot1.log() + rot2.log() + rot3.log() + rot4.log())/4)
+avg_rotation = rl.SO2.exp((rot1.log() + rot2.log() + rot3.log() + rot4.log()) / 4)
 
 
 print(avg_rotation)

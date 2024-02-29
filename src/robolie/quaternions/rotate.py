@@ -4,17 +4,19 @@ Module for 3D rotations using quaternions
 """
 
 from __future__ import annotations
+
 from typing import Optional
 
 import numpy as np
+from numpy.typing import NDArray
 
 import robolie as rl
 
 
 def rotate_by_quaternion(
-    vector: np.ndarray,
+    vector: NDArray[np.float64],
     theta: Optional[float] = None,
-    axis: Optional[np.ndarray] = None,
+    axis: Optional[NDArray[np.float64]] = None,
     quaternion: Optional[rl.Quaternion] = None,
 ) -> np.ndarray:
     """Rotates a vector by a quaternion.
@@ -33,8 +35,11 @@ def rotate_by_quaternion(
     if quaternion is not None:
         q = quaternion
     else:
+        assert (
+            theta is not None and axis is not None
+        ), "Either a quaternion or an angle and an axis must be provided."
         assert np.isclose(np.linalg.norm(axis), 1), "The axis must be a unit vector."
-        q: rl.Quaternion = rl.Quaternion.from_angle_and_axis(theta / 2, axis)
+        q = rl.Quaternion.from_angle_and_axis(theta / 2, axis)
 
     q_conj: rl.Quaternion = q.conjugated()
     p_rot: rl.Quaternion = q * p * q_conj
@@ -55,7 +60,7 @@ def compute_average_rotation_quaternion(
 
     # Convert rotations to quaternions
     quaternions = [
-        rl.Quaternion.from_angle_and_axis(theta/2, axis) for theta, axis in rotations
+        rl.Quaternion.from_angle_and_axis(theta / 2, axis) for theta, axis in rotations
     ]
 
     # Map all quaternions to the lie algebra

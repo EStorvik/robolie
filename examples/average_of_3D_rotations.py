@@ -1,10 +1,11 @@
-"""An Example where the log and exp maps are used to compute the average of a set of 3D rotations, performed by queternions."""
+"""An Example where the log and exp maps are used to
+compute the average of a set of 3D rotations, performed by queternions."""
+
 from __future__ import annotations
 
 import numpy as np
 
 import robolie as rl
-
 
 # Create list of rotations consisting of angles and axes
 rotations = [
@@ -14,12 +15,14 @@ rotations = [
 ]
 
 # Convert rotations to quaternions
-quaternions = [rl.Quaternion.from_angle_and_axis(theta/2, axis) for theta, axis in rotations]
+quaternions = [
+    rl.Quaternion.from_angle_and_axis(theta / 2, axis) for theta, axis in rotations
+]
 
 # Map all quaternions to the lie algebra
 pure_quaternions = [rl.log(q) for q in quaternions]
 
-average_pure_quaternion = rl.PureQuaternion(0,0,0)
+average_pure_quaternion = rl.PureQuaternion(0, 0, 0)
 for i in range(len(pure_quaternions)):
     average_pure_quaternion += pure_quaternions[i]
 average_pure_quaternion = average_pure_quaternion / len(pure_quaternions)

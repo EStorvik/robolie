@@ -3,6 +3,8 @@ import numpy as np
 
 import robolie as rl
 
+import time
+
 # Define the initial point
 p0 = np.array([0, -1, 0])
 
